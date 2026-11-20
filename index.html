@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Une petite question</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: tendre, joueur, un peu théâtral
+   IDEA: une lettre d'invitation scellée d'un cœur, que chacun peut écrire
+   PICTURE: grand cœur-enveloppe SVG qui bat, cœurs qui flottent derrière
+   COLOUR and TYPE: framboise #e0245e, rose poudré, nuit prune ; DM Serif Display + Nunito
+   LAYOUT: une carte centrée, une colonne calme, gros bouton Oui */
+:root{color-scheme:light dark;
+  --bg:light-dark(#ffe6ee,#1d0f17);--card:light-dark(#fff,#2a1622);--ink:light-dark(#3a1024,#ffe6ee);
+  --soft:light-dark(#8a4a64,#d9a6bb);--acc:#e0245e;--acc2:light-dark(#ffc2d4,#5a2440);--line:light-dark(#f6c9d8,#4a2537)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{min-height:100%}
+body{margin:0;background:radial-gradient(120% 80% at 50% 0%,var(--acc2),var(--bg) 70%) fixed;color:var(--ink);
+  font:17px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip;display:grid;place-items:center;padding:20px 14px;min-height:100dvh;
+  -webkit-tap-highlight-color:transparent}
+#amb{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#amb i{position:absolute;bottom:-60px;opacity:.18;animation:drift linear infinite}
+@keyframes drift{to{transform:translate(var(--dx),-120vh) rotate(var(--r))}}
+.card{width:min(560px,100%);background:var(--card);border-radius:28px;padding:clamp(22px,5vw,40px);z-index:1;
+  box-shadow:0 30px 60px -30px rgba(160,20,70,.45),0 0 0 1px var(--line);text-align:center;position:relative}
+.screen{display:none}.screen.on{display:block;animation:in .5s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;line-height:1.08;text-wrap:balance;margin:.2em 0 .35em}
+h1{font-size:clamp(30px,7vw,44px)}h2{font-size:clamp(26px,6vw,36px)}
+h1 em,h2 em{color:var(--acc)}
+p.lead{color:var(--soft);margin:0 auto 22px;max-width:40ch}
+.heart{width:min(210px,52vw);height:auto;display:block;margin:0 auto 6px;animation:beat 1.6s ease-in-out infinite;transform-origin:50% 60%}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.08)}24%{transform:scale(.98)}36%{transform:scale(1.05)}}
+.btns{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;min-height:120px}
+button{font:inherit;cursor:pointer;border:0;border-radius:999px;min-height:44px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.act:focus-within,.seg label:focus-within{outline:3px solid var(--acc);outline-offset:3px}
+#yes{background:var(--acc);color:#fff;font-weight:800;font-size:calc(22px * var(--g,1));padding:calc(16px * var(--g,1)) calc(44px * var(--g,1));
+  animation:glow 1.8s ease-in-out infinite;transition:transform .2s,font-size .3s,padding .3s;position:relative}
+@keyframes glow{0%,100%{box-shadow:0 12px 24px -10px rgba(224,36,94,.7),0 0 0 0 rgba(224,36,94,.45)}50%{box-shadow:0 12px 24px -10px rgba(224,36,94,.7),0 0 0 14px rgba(224,36,94,0)}}
+#yes:hover{transform:scale(1.05)}
+#no{color:var(--soft);border:2px solid var(--line);font-weight:600;font-size:15px;padding:8px 18px;white-space:nowrap;z-index:20;background:var(--card);touch-action:none;user-select:none;-webkit-user-select:none}
+#no.run{position:fixed;margin:0}
+#no.blink{animation:blink .18s ease}
+@keyframes blink{from{transform:scale(.6);opacity:.4}to{transform:none;opacity:1}}
+#no.gone{opacity:0;transform:scale(.2) rotate(30deg);pointer-events:none;transition:.35s}
+.hint{font-size:13px;color:var(--soft);min-height:20px;margin-top:8px}
+form{text-align:start;display:grid;gap:18px;margin-top:8px}
+label.f{display:grid;gap:6px;font-weight:600}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+input,textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;width:100%;min-height:48px}
+textarea{min-height:80px;resize:vertical}
+fieldset{border:0;padding:0;margin:0}legend{font-weight:600;margin-bottom:8px}
+.small{font-size:13px;color:var(--soft);font-weight:400}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{position:relative;flex:1 1 0;text-align:center;border:1.5px solid var(--line);border-radius:999px;padding:10px 12px;cursor:pointer;font-weight:600;background:var(--bg);min-height:44px;white-space:nowrap}
+.seg input{position:absolute;opacity:0;inset:0;min-height:0;cursor:pointer}
+.seg label:has(input:checked){background:var(--acc);border-color:var(--acc);color:#fff}
+.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.act{position:relative;border:1.5px solid var(--line);border-radius:16px;padding:12px 6px 10px;text-align:center;cursor:pointer;background:var(--bg);transition:.2s;font-size:14px;font-weight:600;line-height:1.25}
+.act input{position:absolute;opacity:0;inset:0;cursor:pointer;min-height:0}
+.act svg{width:30px;height:30px;display:block;margin:0 auto 6px;stroke:var(--acc);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.act:has(input:checked){background:var(--acc);color:#fff;border-color:var(--acc);transform:translateY(-2px)}
+.act:has(input:checked) svg{stroke:#fff}
+.hide{display:none!important}
+.add{display:flex;gap:8px;margin-top:12px}.add input{flex:1}.add button{flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.chips:empty{display:none}
+.chip{background:var(--acc);color:#fff;border-radius:999px;padding:4px 4px 4px 14px;display:inline-flex;gap:6px;align-items:center;font-weight:600;font-size:14px;animation:in .3s ease}
+.chip button{background:rgba(255,255,255,.25);color:#fff;width:32px;height:32px;min-height:32px;padding:0;font-size:18px;line-height:1}
+.chk{display:flex;gap:10px;align-items:center;margin-top:14px;font-weight:600;cursor:pointer}
+.chk input{width:22px;height:22px;min-height:0;flex:none;accent-color:var(--acc)}
+.main{background:var(--acc);color:#fff;font-weight:800;font-size:19px;padding:16px;width:100%;box-shadow:0 12px 24px -10px rgba(224,36,94,.7)}
+.main[disabled]{opacity:.6;cursor:wait}
+.ghost{background:transparent;color:var(--acc);border:2px solid var(--acc);padding:10px 18px;font-weight:700}
+.err{color:var(--acc);font-size:14px;min-height:1em;margin:0}
+.out{display:grid;gap:12px;text-align:start;margin-top:22px;padding-top:22px;border-top:1.5px dashed var(--line)}
+.out .bar{display:flex;gap:8px;flex-wrap:wrap}.out .bar>*{flex:1 1 140px}
+.out a.ghost{text-decoration:none;text-align:center;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;min-height:44px}
+.note{background:var(--bg);border-radius:16px;padding:14px 16px;font-size:14px;border:1.5px solid var(--line)}
+.note b{color:var(--acc)}
+.recap{background:var(--bg);border-radius:18px;padding:16px 18px;text-align:start;margin:16px 0;border:1.5px dashed var(--line)}
+.recap div{display:flex;gap:10px;justify-content:space-between;padding:4px 0}.recap b{white-space:nowrap}.recap span{text-align:end}
+#preview{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:30;background:var(--ink);color:var(--card);font-size:14px;padding:8px 16px}
+.fly,.pt,.spark,.poof{position:fixed;pointer-events:none;z-index:40}
+.fly{bottom:-40px;animation:up linear forwards}
+@keyframes up{to{transform:translateY(-115vh) rotate(var(--r));opacity:0}}
+.pt{animation:pt .9s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes pt{to{transform:translate(var(--dx),var(--dy)) scale(.3) rotate(var(--r));opacity:0}}
+.spark{width:8px;height:8px;margin:-4px 0 0 -4px;background:radial-gradient(circle,#fff 0 30%,#ff6b93 60%,transparent 70%);border-radius:50%;animation:sp .7s ease-out forwards}
+@keyframes sp{to{transform:translateY(14px) scale(.2);opacity:0}}
+@media(max-width:600px){.row{grid-template-columns:minmax(0,1fr)}.acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.heart,.fly,#amb i,#yes{animation:none}.screen.on{animation:none}}
+</style>
+</head>
+<body>
+<div id="amb" aria-hidden="true"></div>
+<button id="preview" class="hide" type="button"></button>
+
+<main class="card">
+
+  <!-- Écran 0 : créer son invitation -->
+  <section class="screen" id="s0">
+    <svg class="heart" viewBox="0 0 200 180" aria-hidden="true">
+      <defs><linearGradient id="g0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b93"/><stop offset="1" stop-color="#c8124a"/></linearGradient></defs>
+      <ellipse cx="100" cy="170" rx="60" ry="7" fill="#c8124a" opacity=".15"/>
+      <path d="M100 160C40 118 12 86 12 54 12 28 32 10 56 10c18 0 34 10 44 26C110 20 126 10 144 10c24 0 44 18 44 44 0 32-28 64-88 106z" fill="url(#g0)"/>
+      <path d="M40 40c6-10 16-15 26-14" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".55"/>
+      <path d="M70 108l8-30 46-18-24 44z" fill="#fff"/><path d="M78 78l46-18-30 26z" fill="#ffd1de"/>
+    </svg>
+    <h1 data-t="cTitle"></h1>
+    <p class="lead" data-t="cLead"></p>
+    <form id="cf" novalidate>
+      <fieldset><legend data-t="cLang"></legend>
+        <div class="seg"><label><input type="radio" name="lang" value="fr" checked>Français</label><label><input type="radio" name="lang" value="en">English</label></div>
+      </fieldset>
+      <label class="f"><span data-t="cEmail"></span>
+        <input type="email" id="cEmail" autocomplete="email" inputmode="email" placeholder="toi@gmail.com" required>
+        <span class="small" data-t="cEmailHelp"></span>
+      </label>
+      <div class="row">
+        <label class="f"><span data-t="cFrom"></span><input id="cFrom" autocomplete="given-name"></label>
+        <label class="f"><span data-t="cTo"></span><input id="cTo"></label>
+      </div>
+      <fieldset><legend data-t="cTone"></legend>
+        <div class="seg"><label><input type="radio" name="tone" value="love" checked><span data-t="tLove"></span></label><label><input type="radio" name="tone" value="friend"><span data-t="tFriend"></span></label></div>
+      </fieldset>
+      <label class="f"><span data-t="cPhrase"></span>
+        <select id="cPhrase"></select>
+        <textarea id="cCustom" class="hide" maxlength="160"></textarea>
+      </label>
+      <fieldset><legend data-t="cActs"></legend>
+        <span class="small" data-t="cActsHelp"></span>
+        <div class="acts" id="cActs" style="margin-top:10px"></div>
+        <div class="add"><input id="cNew" maxlength="40" enterkeyhint="done"><button class="ghost" id="cAdd" type="button" data-t="cAdd"></button></div>
+        <div class="chips" id="cChips"></div>
+        <label class="chk"><input type="checkbox" id="cOther" checked><span data-t="cOther"></span></label>
+      </fieldset>
+      <p class="err" id="cErr" aria-live="polite"></p>
+      <button class="main" type="submit" data-t="cMake"></button>
+    </form>
+
+    <div class="out hide" id="cOut">
+      <label class="f"><span data-t="cLink"></span><input id="cLinkBox" readonly></label>
+      <div class="bar">
+        <button class="ghost" id="cCopy" type="button" data-t="cCopy"></button>
+        <a class="ghost" id="cWa" target="_blank" rel="noopener" data-t="cWa"></a>
+        <button class="ghost" id="cPrev" type="button" data-t="cPrev"></button>
+      </div>
+      <div class="note"><span data-t="cAct"></span>
+        <div class="bar" style="margin-top:10px"><button class="ghost" id="cActBtn" type="button" data-t="cActBtn"></button></div>
+        <p class="err" id="cActMsg" aria-live="polite" style="margin-top:8px"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Écran 1 : la question -->
+  <section class="screen" id="s1">
+    <svg class="heart" viewBox="0 0 200 180" aria-hidden="true">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b93"/><stop offset="1" stop-color="#c8124a"/></linearGradient></defs>
+      <ellipse cx="100" cy="170" rx="60" ry="7" fill="#c8124a" opacity=".15"/>
+      <path d="M100 160C40 118 12 86 12 54 12 28 32 10 56 10c18 0 34 10 44 26C110 20 126 10 144 10c24 0 44 18 44 44 0 32-28 64-88 106z" fill="url(#g1)"/>
+      <path d="M40 40c6-10 16-15 26-14" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".55"/>
+      <rect x="62" y="60" width="76" height="52" rx="6" fill="#fff"/>
+      <path d="M62 64l38 28 38-28" stroke="#e0245e" stroke-width="4" fill="none" stroke-linejoin="round"/>
+      <circle cx="100" cy="92" r="9" fill="#e0245e"/>
+    </svg>
+    <h1 id="q"></h1>
+    <p class="lead" id="qLead"></p>
+    <div class="btns">
+      <button id="yes" type="button"></button>
+      <button id="no" type="button"></button>
+    </div>
+    <p class="hint" id="hint" aria-live="polite"></p>
+  </section>
+
+  <!-- Écran 2 : le choix -->
+  <section class="screen" id="s2">
+    <h2 id="s2Title"></h2>
+    <p class="lead" id="s2Lead"></p>
+    <form id="f" novalidate>
+      <label class="f"><span data-t="fName"></span><input id="name" autocomplete="given-name"></label>
+      <div class="row">
+        <label class="f"><span data-t="fDay"></span><input type="date" id="day" required></label>
+        <label class="f"><span data-t="fHour"></span><input type="time" id="hour" value="19:00" required></label>
+      </div>
+      <fieldset><legend data-t="fAct"></legend>
+        <div class="acts" id="acts"></div>
+        <input id="other" class="hide" style="margin-top:10px">
+      </fieldset>
+      <label class="f"><span data-t="fMsg"></span><textarea id="msg"></textarea></label>
+      <p class="err" id="err" aria-live="polite"></p>
+      <button class="main" id="send" type="submit" data-t="fSend"></button>
+    </form>
+  </section>
+
+  <!-- Écran 3 : confirmation -->
+  <section class="screen" id="s3">
+    <svg class="heart" viewBox="0 0 200 180" aria-hidden="true">
+      <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b93"/><stop offset="1" stop-color="#c8124a"/></linearGradient></defs>
+      <path d="M100 160C40 118 12 86 12 54 12 28 32 10 56 10c18 0 34 10 44 26C110 20 126 10 144 10c24 0 44 18 44 44 0 32-28 64-88 106z" fill="url(#g3)"/>
+      <path d="M66 82l24 24 46-46" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <h2 id="doneTitle"></h2>
+    <p class="lead" id="doneText"></p>
+    <div class="recap" id="recap"></div>
+    <button class="ghost" id="again" type="button" hidden data-t="again"></button>
+  </section>
+
+</main>
+
+<script>
+{
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[<>&"]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarse = matchMedia("(pointer: coarse)").matches;
+
+/* ---------- Textes FR / EN ---------- */
+const T = {
+fr:{ cTitle:"Crée ton <em>invitation</em>", cLead:"Entre ton e-mail, génère ton lien et envoie-le. La réponse arrivera directement dans ta boîte, sans que ton adresse soit affichée.",
+  cLang:"Langue de l'invitation", cEmail:"Ton e-mail (pour recevoir la réponse)", cEmailHelp:"Il n'est jamais affiché dans l'invitation.",
+  cFrom:"Ton prénom", cTo:"Son prénom", cTone:"Le ton", tLove:"Romantique", tFriend:"Amical", cPhrase:"La phrase d'invitation", custom:"Écrire ma propre phrase…",
+  cMake:"Créer mon lien", cLink:"Ton lien personnel", cCopy:"Copier le lien", copied:"Copié !", cWa:"WhatsApp", cPrev:"Aperçu",
+  cAct:"<b>Avant de partager :</b> active la réception une seule fois. Tu recevras un e-mail « Activate Form » (regarde aussi les spams) : clique dessus, et toutes les réponses arriveront ensuite.",
+  cActBtn:"Activer la réception", actSent:"E-mail d'activation envoyé. Ouvre ta boîte et clique sur « Activate Form ».", actFail:"Envoi impossible depuis cet aperçu. Fais-le depuis le site en ligne.",
+  cActs:"Activités proposées", cActsHelp:"Décoche celles que tu ne veux pas et ajoute les tiennes.", cAdd:"Ajouter", cNewPh:"Ex. : karting, musée, hammam…",
+  cOther:"La laisser proposer sa propre idée", eActs:"Garde au moins une activité.", rm:"Retirer",
+  eEmail:"Entre une adresse e-mail valide.", eTo:"Entre son prénom.", ePhrase:"Écris ta phrase.",
+  waText:(t,f)=>`${t}, ${f} a une petite question pour toi 💌`, prevOn:"Aperçu — revenir à la création",
+  phrases:{love:["Est-ce que tu me ferais l'honneur d'un <em>rendez-vous</em> ?","Et si on écrivait un joli souvenir ensemble ? Un <em>rendez-vous</em>, toi et moi ?","J'ai une question très sérieuse : tu <em>sors</em> avec moi ?"],
+           friend:["On se fait une <em>sortie</em> ensemble ?","Ça te dit qu'on se retrouve pour un <em>bon moment</em> ?","J'ai une super idée : une <em>sortie</em>, toi et moi ?"]},
+  leads:{love:"J'ai cherché une meilleure idée que de passer du temps avec toi… je n'en ai trouvé aucune.",friend:"Ça fait trop longtemps. Dis oui, je m'occupe du reste."},
+  yes:"Oui, avec plaisir", no:"Non",
+  noLines:["Attends…","Réfléchis encore","Tu es sûr·e ?","Vraiment sûr·e ?","Pense au dessert…","Je t'offre le café","Dernière chance !","Bon… j'abandonne"],
+  hints:["Il est un peu timide, ce bouton.","Le Oui grandit, lui.","Les boutons ne mentent pas.","Plus que le Oui, bientôt…"], noGone:"Il ne reste plus qu'une réponse possible.",
+  s2Title:"Tu as dit <em>oui</em> !", s2Love:"Tu viens officiellement d'illuminer ma semaine. Choisis le moment et l'ambiance.", s2Friend:"Génial ! Choisis le moment et l'activité.",
+  from:f=>`— ${f}`, fName:"Ton prénom", fDay:"Le jour", fHour:"L'heure", fAct:"Ce qui te ferait plaisir", fOther:"Dis-moi ton idée…",
+  fMsg:"Un petit mot (facultatif)", fMsgPh:"Une envie, une contrainte, un dessert préféré…", fSend:"Envoyer ma réponse", sending:"Envoi en cours…",
+  eDay:"Choisis un jour.", eHour:"Choisis une heure.", eAct:"Dis-moi ton idée d'activité.",
+  okT:"C'est <em>noté</em> !", okP:"Ta réponse est partie. J'ai déjà hâte d'y être.", koT:"Oups, <em>presque</em>…", koP:"Ta réponse n'a pas pu partir. Vérifie ta connexion et réessaie.", again:"Réessayer l'envoi",
+  rWho:"Qui", rWhen:"Quand", rAt:"À", rWhat:"Quoi", rMsg:"Son mot", anon:"Prénom non précisé",
+  subj:(n,a,d,h)=>`💖 ${n} a dit OUI — ${a}, ${d} à ${h}`, kName:"Prénom", kDay:"Jour", kHour:"Heure", kAct:"Activité", kMsg:"Message",
+  actSubj:"Activation de ton invitation", actBody:"Clique sur « Activate Form » dans cet e-mail pour recevoir les réponses.", noLink:"Ce lien d'invitation est incomplet.",
+  acts:["Cinéma","Dîner en tête-à-tête","Café & pâtisserie","Coucher de soleil à la plage","Jogging ensemble","Balade en ville","Pique-nique","Concert ou spectacle","Bowling","Soirée jeux","Surprends-moi","Autre idée"],
+  dl:"fr-FR" },
+en:{ cTitle:"Create your <em>invitation</em>", cLead:"Enter your email, generate your link and send it. The answer lands straight in your inbox, and your address is never shown.",
+  cLang:"Invitation language", cEmail:"Your email (to receive the answer)", cEmailHelp:"It is never shown in the invitation.",
+  cFrom:"Your first name", cTo:"Their first name", cTone:"Tone", tLove:"Romantic", tFriend:"Friendly", cPhrase:"Invitation line", custom:"Write my own line…",
+  cMake:"Create my link", cLink:"Your personal link", cCopy:"Copy link", copied:"Copied!", cWa:"WhatsApp", cPrev:"Preview",
+  cAct:"<b>Before sharing:</b> activate receiving once. You'll get an “Activate Form” email (check spam too): click it, and every answer will arrive after that.",
+  cActBtn:"Activate receiving", actSent:"Activation email sent. Open your inbox and click “Activate Form”.", actFail:"Can't send from this preview. Do it from the live site.",
+  cActs:"Suggested activities", cActsHelp:"Untick the ones you don't want and add your own.", cAdd:"Add", cNewPh:"e.g. go-karting, museum, spa…",
+  cOther:"Let them suggest their own idea", eActs:"Keep at least one activity.", rm:"Remove",
+  eEmail:"Enter a valid email address.", eTo:"Enter their first name.", ePhrase:"Write your line.",
+  waText:(t,f)=>`${t}, ${f} has a little question for you 💌`, prevOn:"Preview — back to editing",
+  phrases:{love:["Would you do me the honour of going on a <em>date</em> with me?","What if we made a beautiful memory together? A <em>date</em>, just you and me?","I have a very serious question: will you <em>go out</em> with me?"],
+           friend:["Fancy <em>hanging out</em> together?","How about we meet up for a <em>good time</em>?","I've got a great idea: an <em>outing</em>, you and me?"]},
+  leads:{love:"I tried to think of a better idea than spending time with you… I couldn't find one.",friend:"It's been way too long. Say yes, I'll handle the rest."},
+  yes:"Yes, I'd love to", no:"No",
+  noLines:["Wait…","Think again","Are you sure?","Really sure?","Think of dessert…","Coffee's on me","Last chance!","Fine… I give up"],
+  hints:["This button is a little shy.","The Yes keeps growing, though.","Buttons don't lie.","Soon only Yes will be left…"], noGone:"Only one answer left.",
+  s2Title:"You said <em>yes</em>!", s2Love:"You've officially made my week. Pick the moment and the mood.", s2Friend:"Awesome! Pick the moment and the activity.",
+  from:f=>`— ${f}`, fName:"Your first name", fDay:"Day", fHour:"Time", fAct:"What would you enjoy", fOther:"Tell me your idea…",
+  fMsg:"A little note (optional)", fMsgPh:"A wish, a constraint, a favourite dessert…", fSend:"Send my answer", sending:"Sending…",
+  eDay:"Pick a day.", eHour:"Pick a time.", eAct:"Tell me your activity idea.",
+  okT:"It's a <em>date</em>!", okP:"Your answer is on its way. I can't wait.", koT:"Oops, <em>almost</em>…", koP:"Your answer couldn't be sent. Check your connection and try again.", again:"Try again",
+  rWho:"Who", rWhen:"When", rAt:"At", rWhat:"What", rMsg:"Note", anon:"Name not given",
+  subj:(n,a,d,h)=>`💖 ${n} said YES — ${a}, ${d} at ${h}`, kName:"Name", kDay:"Day", kHour:"Time", kAct:"Activity", kMsg:"Message",
+  actSubj:"Activate your invitation", actBody:"Click “Activate Form” in this email to start receiving answers.", noLink:"This invitation link is incomplete.",
+  acts:["Cinema","Dinner for two","Coffee & pastries","Sunset at the beach","Jogging together","City walk","Picnic","Concert or show","Bowling","Game night","Surprise me","Other idea"],
+  dl:"en-GB" }
+};
+const ICONS = {
+  film:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 6l2 4M12 6l2 4M17 6l2 4"/>',
+  diner:'<path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 3c-2 2-2 6 0 9v9"/>',
+  cafe:'<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 3c0 2 2 2 2 4M12 3c0 2 2 2 2 4"/>',
+  beach:'<circle cx="12" cy="13" r="4"/><path d="M2 18h20M5 21h14M12 5v2M5 8l1.5 1.5M19 8l-1.5 1.5"/>',
+  run:'<circle cx="14" cy="4.5" r="2"/><path d="M8 21l3-6 3 2v5M7 12l3-4 4 1 2 4 3 1M11 15l-1-4"/>',
+  walk:'<path d="M3 20c4-1 6-5 9-5s5 4 9 5M12 15V4l5 3-5 3"/>',
+  picnic:'<path d="M4 10h16l-2 10H6zM8 10l4-6 4 6M4 14h16"/>',
+  music:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  bowl:'<circle cx="12" cy="13" r="8"/><circle cx="10" cy="10" r="1"/><circle cx="14" cy="10" r="1"/><circle cx="12" cy="13.5" r="1"/>',
+  game:'<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M16 12h.01M18 14h.01"/>',
+  surprise:'<rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 13h18M12 9v12M12 9c-3 0-5-1-5-3s3-2 5 3c2-5 5-5 5-3s-2 3-5 3"/>',
+  other:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'
+};
+const ICON_KEYS = Object.keys(ICONS);
+
+/* ---------- Lien : les réglages sont brouillés dans le #hash (l'e-mail n'apparaît pas en clair) ---------- */
+const KEY = [...new TextEncoder().encode("rdv-coeur-2026-love")];
+function pack(o){
+  const b = new TextEncoder().encode(JSON.stringify(o)).map((x,i) => x ^ KEY[i % KEY.length] ^ (i*7 & 255));
+  let s = ""; b.forEach(x => s += String.fromCharCode(x));
+  return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function unpack(t){
+  try{
+    const s = atob(t.replace(/-/g,"+").replace(/_/g,"/"));
+    const b = Uint8Array.from(s, (c,i) => c.charCodeAt(0) ^ KEY[i % KEY.length] ^ (i*7 & 255));
+    return JSON.parse(new TextDecoder().decode(b));
+  }catch{ return null; }
+}
+
+let L = "fr", cfg = null, previewing = false;
+
+function applyStatic(){
+  document.documentElement.lang = L;
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T[L][el.dataset.t]; if (typeof v === "string") el.innerHTML = v; });
+  $("cCustom").placeholder = T[L].custom; $("other").placeholder = T[L].fOther; $("msg").placeholder = T[L].fMsgPh;
+  $("cFrom").placeholder = L==="fr" ? "Ismail" : "Alex"; $("cTo").placeholder = L==="fr" ? "Sara" : "Sam";
+  $("cNew").placeholder = T[L].cNewPh; renderCActs();
+}
+
+/* Activités choisies par la personne qui invite */
+const off = new Set(), customs = [];
+function renderCActs(){
+  $("cActs").innerHTML = T[L].acts.slice(0, 11).map((a,i) =>
+    `<label class="act"><input type="checkbox" value="${i}" ${off.has(i) ? "" : "checked"}><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[ICON_KEYS[i]]}</svg>${a}</label>`).join("");
+  $("cChips").innerHTML = customs.map((c,i) => `<span class="chip">${esc(c)}<button type="button" data-i="${i}" aria-label="${T[L].rm} ${esc(c)}">×</button></span>`).join("");
+}
+$("cActs").addEventListener("change", e => { const i = +e.target.value; e.target.checked ? off.delete(i) : off.add(i); });
+function addCustom(){
+  const v = $("cNew").value.trim().slice(0, 40);
+  if (!v || customs.some(c => c.toLowerCase() === v.toLowerCase())) return;
+  if (customs.length >= 8) return;
+  customs.push(v); $("cNew").value = ""; renderCActs();
+  const r = $("cAdd").getBoundingClientRect(); burst(r.left + r.width/2, r.top + r.height/2, 10);
+}
+$("cAdd").addEventListener("click", addCustom);
+$("cNew").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); addCustom(); } });
+$("cChips").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (b){ customs.splice(+b.dataset.i, 1); renderCActs(); } });
+function show(id){ document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); scrollTo({top:0,behavior:calm?"auto":"smooth"}); }
+
+/* ---------- Écran 0 : création ---------- */
+const tone = () => document.querySelector("input[name=tone]:checked").value;
+function fillPhrases(){
+  const list = T[L].phrases[tone()];
+  $("cPhrase").innerHTML = list.map((p,i) => `<option value="${i}">${p.replace(/<\/?em>/g,"")}</option>`).join("") + `<option value="c">${T[L].custom}</option>`;
+  $("cCustom").classList.add("hide");
+}
+document.querySelectorAll("input[name=lang]").forEach(r => r.addEventListener("change", () => { L = r.value; applyStatic(); fillPhrases(); $("cOut").classList.add("hide"); }));
+document.querySelectorAll("input[name=tone]").forEach(r => r.addEventListener("change", fillPhrases));
+$("cPhrase").addEventListener("change", () => $("cCustom").classList.toggle("hide", $("cPhrase").value !== "c"));
+
+let made = null;
+$("cf").addEventListener("submit", e => {
+  e.preventDefault();
+  const em = $("cEmail").value.trim(), to = $("cTo").value.trim(), from = $("cFrom").value.trim();
+  const pv = $("cPhrase").value, custom = $("cCustom").value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return $("cErr").textContent = T[L].eEmail;
+  if (!to) return $("cErr").textContent = T[L].eTo;
+  if (pv === "c" && !custom) return $("cErr").textContent = T[L].ePhrase;
+  const sel = [...Array(11).keys()].filter(i => !off.has(i)), x = $("cOther").checked;
+  if (!sel.length && !customs.length && !x) return $("cErr").textContent = T[L].eActs;
+  $("cErr").textContent = "";
+  made = { e:em, f:from, t:to, l:L, o:tone(), p: pv === "c" ? custom : +pv, a:sel, c:[...customs], x };
+  const url = location.origin + location.pathname + "#" + pack(made);
+  $("cLinkBox").value = url;
+  $("cWa").href = "https://wa.me/?text=" + encodeURIComponent(T[L].waText(to, from || "…") + "\n" + url);
+  $("cOut").classList.remove("hide"); $("cActMsg").textContent = "";
+  const r = e.submitter ? e.submitter.getBoundingClientRect() : {left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  burst(r.left + r.width/2, r.top + r.height/2, 22);
+  setTimeout(() => $("cOut").scrollIntoView({behavior:calm?"auto":"smooth",block:"start"}), 150);
+});
+$("cCopy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("cLinkBox").value); } catch { $("cLinkBox").select(); try{ document.execCommand("copy"); }catch{} }
+  $("cCopy").textContent = T[L].copied; setTimeout(() => $("cCopy").textContent = T[L].cCopy, 1600);
+});
+$("cPrev").addEventListener("click", () => { if (!made) return; previewing = true; $("preview").textContent = T[L].prevOn; $("preview").classList.remove("hide"); startInvite(made); });
+$("preview").addEventListener("click", () => { previewing = false; $("preview").classList.add("hide"); resetNo(); L = made.l; applyStatic(); show("s0"); });
+$("cActBtn").addEventListener("click", async () => {
+  $("cActBtn").disabled = true;
+  try { await post(made.e, { _subject:T[made.l].actSubj, Info:T[made.l].actBody }); $("cActMsg").textContent = T[L].actSent; }
+  catch(err){ $("cActMsg").textContent = /activat/i.test(err.message) ? T[L].actSent : T[L].actFail; }
+  $("cActBtn").disabled = false;
+});
+
+/* ---------- Envoi (FormSubmit) ---------- */
+async function post(to, fields){
+  const r = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
+    method:"POST", headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+    body: JSON.stringify(Object.assign({ _template:"table", _captcha:"false" }, fields))
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || String(j.success) === "false") throw new Error(j.message || "refused");
+}
+
+/* ---------- Écrans 1-3 : l'invitation ---------- */
+function startInvite(c){
+  cfg = c; L = T[c.l] ? c.l : "fr"; applyStatic();
+  const t = T[L], o = c.o === "friend" ? "friend" : "love";
+  const phrase = typeof c.p === "number" ? (t.phrases[o][c.p] || t.phrases[o][0]) : esc(c.p);
+  $("q").innerHTML = (c.t ? esc(c.t) + ", " : "") + phrase.charAt(0).toLowerCase() + phrase.slice(1);
+  if (!c.t) $("q").innerHTML = phrase;
+  $("qLead").textContent = t.leads[o] + (c.f ? " " + t.from(c.f) : "");
+  $("yes").textContent = t.yes; resetNo();
+  $("s2Title").innerHTML = t.s2Title; $("s2Lead").textContent = o === "love" ? t.s2Love : t.s2Friend;
+  $("name").value = c.t || "";
+  ACTS = [];
+  (Array.isArray(c.a) ? c.a : [...Array(11).keys()]).forEach(i => { if (t.acts[i] && i < 11) ACTS.push([t.acts[i], ICON_KEYS[i]]); });
+  (Array.isArray(c.c) ? c.c : []).slice(0, 8).forEach(s => ACTS.push([String(s).slice(0, 40), "star"]));
+  if (c.x !== false || !ACTS.length) ACTS.push([t.acts[11], "other"]);
+  $("acts").innerHTML = ACTS.map(([a,k],i) => `<label class="act"><input type="radio" name="act" value="${i}" ${i===0?"checked":""}><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>${esc(a)}</label>`).join("");
+  $("other").classList.toggle("hide", ACTS[0][1] !== "other");
+  show("s1"); armAuto();
+}
+let ACTS = [];
+$("acts").addEventListener("change", () => $("other").classList.toggle("hide", ACTS[+document.querySelector("input[name=act]:checked").value][1] !== "other"));
+
+/* ---------- Le bouton Non impossible à attraper ---------- */
+const no = $("no"), yes = $("yes"), home = no.parentElement;
+let step = 0, started = false, done = true, lastTxt = 0, auto = null, pos = {x:-999,y:-999};
+const live = () => !done && $("s1").classList.contains("on");
+
+function resetNo(){
+  clearTimeout(auto); step = 0; started = false; done = false; lastTxt = 0;
+  no.className = ""; no.removeAttribute("style"); home.appendChild(no);
+  no.textContent = T[L].no; yes.style.removeProperty("--g"); $("hint").textContent = "";
+}
+function place(){
+  const w = no.offsetWidth, h = no.offsetHeight, pad = 10, yr = yes.getBoundingClientRect();
+  let x, y, best = null, bestD = -1;
+  for (let i = 0; i < 40; i++){
+    x = pad + Math.random() * Math.max(1, innerWidth - w - pad*2);
+    y = pad + Math.random() * Math.max(1, innerHeight - h - pad*2);
+    const onYes = x < yr.right+12 && x+w > yr.left-12 && y < yr.bottom+12 && y+h > yr.top-12;
+    const d = Math.hypot(x + w/2 - pos.x, y + h/2 - pos.y);
+    if (!onYes && d > bestD){ bestD = d; best = [x,y]; if (d > Math.min(innerWidth, innerHeight) * .55) break; }
+  }
+  if (best){ no.style.left = best[0] + "px"; no.style.top = best[1] + "px"; }
+  no.classList.remove("blink"); void no.offsetWidth; if (!calm) no.classList.add("blink");
+}
+function flee(){
+  if (!live()) return;
+  if (!started){
+    const r = no.getBoundingClientRect();
+    document.body.appendChild(no); no.classList.add("run");
+    no.style.left = r.left + "px"; no.style.top = r.top + "px"; started = true;
+  }
+  const now = performance.now();
+  if (now - lastTxt > 450){
+    lastTxt = now;
+    if (step >= T[L].noLines.length){ vanish(); return; }
+    no.textContent = T[L].noLines[step]; step++;
+    yes.style.setProperty("--g", (1 + step * 0.08).toFixed(2));
+    $("hint").textContent = T[L].hints[step % T[L].hints.length];
+  }
+  place();
+}
+function vanish(){
+  done = true; clearTimeout(auto);
+  const r = no.getBoundingClientRect(); poof(r.left + r.width/2, r.top + r.height/2);
+  no.classList.add("gone"); yes.style.setProperty("--g", 1.6); $("hint").textContent = T[L].noGone;
+}
+function armAuto(){
+  clearTimeout(auto);
+  const first = coarse ? 1500 : 3000, every = coarse ? 800 : 1300;
+  auto = setTimeout(function tick(){ if (live()){ flee(); auto = setTimeout(tick, every); } }, first);
+}
+/* Souris : il fuit dès que le curseur approche à moins de 90 px */
+document.addEventListener("pointermove", e => {
+  if (e.pointerType !== "mouse") return;
+  pos = {x:e.clientX, y:e.clientY}; trail(e);
+  if (!live()) return;
+  const r = no.getBoundingClientRect();
+  const cx = Math.max(r.left, Math.min(pos.x, r.right)), cy = Math.max(r.top, Math.min(pos.y, r.bottom));
+  if (Math.hypot(pos.x - cx, pos.y - cy) < 90) flee();
+});
+/* Tactile : il part au tout début du contact, avant que le tap ne se termine, même si le doigt tombe à côté */
+document.addEventListener("touchstart", e => {
+  const t = e.touches[0]; pos = {x:t.clientX, y:t.clientY}; trail(t);
+  if (!live() || e.target.closest("#yes")) return;
+  const r = no.getBoundingClientRect(), m = 50;
+  if (t.clientX > r.left-m && t.clientX < r.right+m && t.clientY > r.top-m && t.clientY < r.bottom+m){ e.preventDefault(); flee(); }
+}, {passive:false, capture:true});
+no.addEventListener("pointerdown", e => { e.preventDefault(); flee(); });
+no.addEventListener("click", e => { e.preventDefault(); flee(); });
+no.addEventListener("focus", () => { if (live()) flee(); });
+addEventListener("resize", () => { if (started && live()) place(); });
+
+yes.addEventListener("click", () => {
+  clearTimeout(auto); done = true; no.classList.add("gone");
+  const r = yes.getBoundingClientRect(); burst(r.left + r.width/2, r.top + r.height/2, 36); hearts(26);
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  $("day").min = iso(new Date()); $("day").value = iso(d);
+  setTimeout(() => show("s2"), calm ? 0 : 350);
+});
+
+/* ---------- Écran 2 : réponse ---------- */
+const iso = x => new Date(x.getTime() - x.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fmtDay = v => { try { return new Date(v + "T12:00").toLocaleDateString(T[L].dl, {weekday:"long",day:"numeric",month:"long",year:"numeric"}); } catch { return v; } };
+let data = null;
+
+$("f").addEventListener("submit", e => {
+  e.preventDefault();
+  const t = T[L], i = +document.querySelector("input[name=act]:checked").value;
+  const act = ACTS[i][1] === "other" ? $("other").value.trim() : ACTS[i][0];
+  const x = { name:$("name").value.trim() || t.anon, day:$("day").value, hour:$("hour").value, act, msg:$("msg").value.trim() };
+  if (!x.day) return $("err").textContent = t.eDay;
+  if (!x.hour) return $("err").textContent = t.eHour;
+  if (!x.act) return $("err").textContent = t.eAct;
+  $("err").textContent = ""; data = x; submit();
+});
+$("again").addEventListener("click", submit);
+
+async function submit(){
+  const t = T[L]; $("send").disabled = true; $("send").textContent = t.sending; $("again").hidden = true;
+  let ok = true;
+  try {
+    if (!cfg || !cfg.e) throw new Error("no address");
+    await post(cfg.e, {
+      _subject: t.subj(data.name, data.act, fmtDay(data.day), data.hour),
+      [t.kName]:data.name, [t.kDay]:fmtDay(data.day), [t.kHour]:data.hour, [t.kAct]:data.act, [t.kMsg]:data.msg || "—"
+    });
+  } catch { ok = false; }
+  $("doneTitle").innerHTML = ok ? t.okT : t.koT; $("doneText").textContent = ok ? t.okP : t.koP; $("again").hidden = ok;
+  $("recap").innerHTML = [[t.rWho,data.name],[t.rWhen,fmtDay(data.day)],[t.rAt,data.hour],[t.rWhat,data.act]].concat(data.msg ? [[t.rMsg,data.msg]] : [])
+    .map(([k,v]) => `<div><b>${k}</b><span>${esc(v)}</span></div>`).join("");
+  show("s3"); $("send").disabled = false; $("send").textContent = t.fSend;
+  if (ok) fireworks();
+}
+
+/* ---------- Effets ---------- */
+const HEART = c => `<svg viewBox="0 0 24 22" width="100%" height="100%"><path d="M12 21C5 16 1 12 1 7a5.5 5.5 0 0 1 11-1 5.5 5.5 0 0 1 11 1c0 5-4 9-11 14z" fill="${c}"/></svg>`;
+const COLS = ["#e0245e","#ff6b93","#ffb3c8","#c8124a","#ffd166"];
+function hearts(n){
+  if (calm) return;
+  for (let i = 0; i < n; i++){
+    const h = document.createElement("div"), s = 14 + Math.random()*22; h.className = "fly";
+    h.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}vw;--r:${Math.random()*120-60}deg;animation-duration:${2.6+Math.random()*2.4}s;animation-delay:${Math.random()*.8}s`;
+    h.innerHTML = HEART(COLS[i % 4]); document.body.appendChild(h); setTimeout(() => h.remove(), 6000);
+  }
+}
+function burst(x, y, n){
+  if (calm) return;
+  for (let i = 0; i < n; i++){
+    const p = document.createElement("div"), a = Math.random()*Math.PI*2, d = 60 + Math.random()*140, s = 8 + Math.random()*14;
+    p.className = "pt";
+    p.style.cssText = `left:${x - s/2}px;top:${y - s/2}px;width:${s}px;height:${s}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;--r:${Math.random()*360}deg`;
+    p.innerHTML = i % 3 ? HEART(COLS[i % 5]) : `<svg viewBox="0 0 10 10" width="100%" height="100%"><path d="M5 0l1.2 3.8L10 5 6.2 6.2 5 10 3.8 6.2 0 5l3.8-1.2z" fill="${COLS[4]}"/></svg>`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
+  }
+}
+function poof(x, y){
+  if (calm) return;
+  for (let i = 0; i < 14; i++){
+    const p = document.createElement("div"), a = i/14*Math.PI*2, s = 10;
+    p.className = "pt";
+    p.style.cssText = `left:${x-s/2}px;top:${y-s/2}px;width:${s}px;height:${s}px;border-radius:50%;background:var(--soft);--dx:${Math.cos(a)*50}px;--dy:${Math.sin(a)*50}px;--r:0deg`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
+  }
+}
+function fireworks(){
+  hearts(40);
+  [0, 450, 900, 1350].forEach(t => setTimeout(() => burst(innerWidth*(.2 + Math.random()*.6), innerHeight*(.15 + Math.random()*.4), 28), t));
+}
+let lastSpark = 0;
+function trail(e){
+  if (calm) return;
+  const now = performance.now(); if (now - lastSpark < 45) return; lastSpark = now;
+  const s = document.createElement("div"); s.className = "spark";
+  s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px";
+  document.body.appendChild(s); setTimeout(() => s.remove(), 750);
+}
+document.addEventListener("touchmove", e => trail(e.touches[0]), {passive:true});
+/* Cœurs qui flottent doucement en fond */
+if (!calm){
+  $("amb").innerHTML = Array.from({length:14}, (_, i) => {
+    const s = 18 + Math.random()*34;
+    return `<i style="left:${Math.random()*100}%;width:${s}px;height:${s}px;--dx:${Math.random()*80-40}px;--r:${Math.random()*90-45}deg;animation-duration:${14+Math.random()*14}s;animation-delay:-${Math.random()*24}s">${HEART(COLS[i % 4])}</i>`;
+  }).join("");
+}
+
+/* ---------- Démarrage : lien d'invitation ou écran de création ---------- */
+const token = location.hash.slice(1);
+const c = token ? unpack(token) : null;
+if (c && c.e){ startInvite(c); }
+else { applyStatic(); fillPhrases(); show("s0"); }
+}
+</script>
+</body>
+</html>
