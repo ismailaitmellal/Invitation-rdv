@@ -142,7 +142,7 @@ fieldset{border:0;padding:0;margin:0}legend{font-weight:600;margin-bottom:8px}
     </form>
 
     <div class="out hide" id="cOut">
-      <label class="f"><span data-t="cLink"></span><input id="cLinkBox" readonly></label>
+      <label class="f"><span data-t="cLink"></span><input id="cLinkBox" readonly><span class="small" id="cUpd" aria-live="polite"></span></label>
       <div class="bar">
         <button class="ghost" id="cCopy" type="button" data-t="cCopy"></button>
         <a class="ghost" id="cWa" target="_blank" rel="noopener" data-t="cWa"></a>
@@ -152,6 +152,7 @@ fieldset{border:0;padding:0;margin:0}legend{font-weight:600;margin-bottom:8px}
         <div class="bar" style="margin-top:10px"><button class="ghost" id="cActBtn" type="button" data-t="cActBtn"></button></div>
         <p class="err" id="cActMsg" aria-live="polite" style="margin-top:8px"></p>
       </div>
+      <p class="small" style="text-align:center;margin:0">v4</p>
     </div>
   </section>
 
@@ -205,6 +206,7 @@ fieldset{border:0;padding:0;margin:0}legend{font-weight:600;margin-bottom:8px}
     <h2 id="doneTitle"></h2>
     <p class="lead" id="doneText"></p>
     <div class="recap" id="recap"></div>
+    <p class="small" id="why"></p>
     <button class="ghost" id="again" type="button" hidden data-t="again"></button>
   </section>
 
@@ -224,7 +226,8 @@ fr:{ cTitle:"Crée ton <em>invitation</em>", cLead:"Entre ton e-mail, génère t
   cFrom:"Ton prénom", cTo:"Son prénom", cTone:"Le ton", tLove:"Romantique", tFriend:"Amical", cPhrase:"La phrase d'invitation", custom:"Écrire ma propre phrase…",
   cMake:"Créer mon lien", cLink:"Ton lien personnel", cCopy:"Copier le lien", copied:"Copié !", cWa:"WhatsApp", cPrev:"Aperçu",
   cAct:"<b>Avant de partager :</b> active la réception une seule fois. Tu recevras un e-mail « Activate Form » (regarde aussi les spams) : clique dessus, et toutes les réponses arriveront ensuite.",
-  cActBtn:"Activer la réception", actSent:"E-mail d'activation envoyé. Ouvre ta boîte et clique sur « Activate Form ».", actFail:"Envoi impossible depuis cet aperçu. Fais-le depuis le site en ligne.",
+  cActBtn:"Activer la réception", actSent:"E-mail d'activation envoyé à ton adresse. Ouvre-le (regarde aussi les spams) et clique sur « Activate Form » AVANT de partager le lien.", actFail:"Envoi impossible.",
+  actWait:"Envoi de l'e-mail d'activation…", actOk:"Réception active : tu viens de recevoir un e-mail test. Tu peux partager ton lien.", updated:"Lien mis à jour ✓",
   cActs:"Activités proposées", cActsHelp:"Décoche celles que tu ne veux pas et ajoute les tiennes.", cAdd:"Ajouter", cNewPh:"Ex. : karting, musée, hammam…",
   cOther:"La laisser proposer sa propre idée", eActs:"Garde au moins une activité.", rm:"Retirer",
   eEmail:"Entre une adresse e-mail valide.", eTo:"Entre son prénom.", ePhrase:"Écris ta phrase.",
@@ -239,7 +242,7 @@ fr:{ cTitle:"Crée ton <em>invitation</em>", cLead:"Entre ton e-mail, génère t
   from:f=>`— ${f}`, fName:"Ton prénom", fDay:"Le jour", fHour:"L'heure", fAct:"Ce qui te ferait plaisir", fOther:"Dis-moi ton idée…",
   fMsg:"Un petit mot (facultatif)", fMsgPh:"Une envie, une contrainte, un dessert préféré…", fSend:"Envoyer ma réponse", sending:"Envoi en cours…",
   eDay:"Choisis un jour.", eHour:"Choisis une heure.", eAct:"Dis-moi ton idée d'activité.",
-  okT:"C'est <em>noté</em> !", okP:"Ta réponse est partie. J'ai déjà hâte d'y être.", koT:"Oups, <em>presque</em>…", koP:"Ta réponse n'a pas pu partir. Vérifie ta connexion et réessaie.", again:"Réessayer l'envoi",
+  okT:"C'est <em>noté</em> !", okP:"Ta réponse est partie. J'ai déjà hâte d'y être.", koT:"Oups, <em>presque</em>…", koP:"Ta réponse n'a pas pu partir. Réessaie dans un instant.", koNet:"Ta réponse n'a pas pu partir : connexion impossible. Réessaie dans un instant.", koAct:"Presque ! La personne qui t'invite doit encore activer la réception (un clic dans son e-mail). Préviens-la, puis réessaie.", again:"Réessayer l'envoi",
   rWho:"Qui", rWhen:"Quand", rAt:"À", rWhat:"Quoi", rMsg:"Son mot", anon:"Prénom non précisé",
   subj:(n,a,d,h)=>`💖 ${n} a dit OUI — ${a}, ${d} à ${h}`, kName:"Prénom", kDay:"Jour", kHour:"Heure", kAct:"Activité", kMsg:"Message",
   actSubj:"Activation de ton invitation", actBody:"Clique sur « Activate Form » dans cet e-mail pour recevoir les réponses.", noLink:"Ce lien d'invitation est incomplet.",
@@ -250,7 +253,8 @@ en:{ cTitle:"Create your <em>invitation</em>", cLead:"Enter your email, generate
   cFrom:"Your first name", cTo:"Their first name", cTone:"Tone", tLove:"Romantic", tFriend:"Friendly", cPhrase:"Invitation line", custom:"Write my own line…",
   cMake:"Create my link", cLink:"Your personal link", cCopy:"Copy link", copied:"Copied!", cWa:"WhatsApp", cPrev:"Preview",
   cAct:"<b>Before sharing:</b> activate receiving once. You'll get an “Activate Form” email (check spam too): click it, and every answer will arrive after that.",
-  cActBtn:"Activate receiving", actSent:"Activation email sent. Open your inbox and click “Activate Form”.", actFail:"Can't send from this preview. Do it from the live site.",
+  cActBtn:"Activate receiving", actSent:"Activation email sent to your address. Open it (check spam too) and click “Activate Form” BEFORE sharing the link.", actFail:"Sending failed.",
+  actWait:"Sending the activation email…", actOk:"Receiving is active: you just got a test email. You can share your link.", updated:"Link updated ✓",
   cActs:"Suggested activities", cActsHelp:"Untick the ones you don't want and add your own.", cAdd:"Add", cNewPh:"e.g. go-karting, museum, spa…",
   cOther:"Let them suggest their own idea", eActs:"Keep at least one activity.", rm:"Remove",
   eEmail:"Enter a valid email address.", eTo:"Enter their first name.", ePhrase:"Write your line.",
@@ -265,7 +269,7 @@ en:{ cTitle:"Create your <em>invitation</em>", cLead:"Enter your email, generate
   from:f=>`— ${f}`, fName:"Your first name", fDay:"Day", fHour:"Time", fAct:"What would you enjoy", fOther:"Tell me your idea…",
   fMsg:"A little note (optional)", fMsgPh:"A wish, a constraint, a favourite dessert…", fSend:"Send my answer", sending:"Sending…",
   eDay:"Pick a day.", eHour:"Pick a time.", eAct:"Tell me your activity idea.",
-  okT:"It's a <em>date</em>!", okP:"Your answer is on its way. I can't wait.", koT:"Oops, <em>almost</em>…", koP:"Your answer couldn't be sent. Check your connection and try again.", again:"Try again",
+  okT:"It's a <em>date</em>!", okP:"Your answer is on its way. I can't wait.", koT:"Oops, <em>almost</em>…", koP:"Your answer couldn't be sent. Try again in a moment.", koNet:"Your answer couldn't be sent: no connection. Try again in a moment.", koAct:"Almost! The person inviting you still needs to activate receiving (one click in their email). Let them know, then try again.", again:"Try again",
   rWho:"Who", rWhen:"When", rAt:"At", rWhat:"What", rMsg:"Note", anon:"Name not given",
   subj:(n,a,d,h)=>`💖 ${n} said YES — ${a}, ${d} at ${h}`, kName:"Name", kDay:"Day", kHour:"Time", kAct:"Activity", kMsg:"Message",
   actSubj:"Activate your invitation", actBody:"Click “Activate Form” in this email to start receiving answers.", noLink:"This invitation link is incomplete.",
@@ -346,46 +350,64 @@ document.querySelectorAll("input[name=tone]").forEach(r => r.addEventListener("c
 $("cPhrase").addEventListener("change", () => $("cCustom").classList.toggle("hide", $("cPhrase").value !== "c"));
 
 let made = null;
-$("cf").addEventListener("submit", e => {
-  e.preventDefault();
+const EMAIL_RE = /^[^\s@\/?#&]+@[^\s@\/?#&]+\.[^\s@\/?#&]+$/;
+/* Construit le lien à partir de l'état actuel du formulaire. Renvoie un message d'erreur ou "" */
+function build(){
   const em = $("cEmail").value.trim(), to = $("cTo").value.trim(), from = $("cFrom").value.trim();
   const pv = $("cPhrase").value, custom = $("cCustom").value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return $("cErr").textContent = T[L].eEmail;
-  if (!to) return $("cErr").textContent = T[L].eTo;
-  if (pv === "c" && !custom) return $("cErr").textContent = T[L].ePhrase;
+  if (!EMAIL_RE.test(em)) return T[L].eEmail;
+  if (!to) return T[L].eTo;
+  if (pv === "c" && !custom) return T[L].ePhrase;
   const sel = [...Array(11).keys()].filter(i => !off.has(i)), x = $("cOther").checked;
-  if (!sel.length && !customs.length && !x) return $("cErr").textContent = T[L].eActs;
-  $("cErr").textContent = "";
+  if (!sel.length && !customs.length && !x) return T[L].eActs;
   made = { e:em, f:from, t:to, l:L, o:tone(), p: pv === "c" ? custom : +pv, a:sel, c:[...customs], x };
   const url = location.origin + location.pathname + "#" + pack(made);
   $("cLinkBox").value = url;
   $("cWa").href = "https://wa.me/?text=" + encodeURIComponent(T[L].waText(to, from || "…") + "\n" + url);
-  $("cOut").classList.remove("hide"); $("cActMsg").textContent = "";
+  return "";
+}
+let lastActivated = "";
+async function activate(){
+  if (!made) return;
+  const m = $("cActMsg"); $("cActBtn").disabled = true; m.textContent = T[L].actWait;
+  try { await post(made.e, { _subject:T[made.l].actSubj, Info:T[made.l].actBody }); m.textContent = T[L].actOk; lastActivated = made.e; }
+  catch(err){ m.textContent = /activat/i.test(err.message) ? T[L].actSent : T[L].actFail + " (" + err.message + ")"; lastActivated = made.e; }
+  $("cActBtn").disabled = false;
+}
+$("cf").addEventListener("submit", e => {
+  e.preventDefault();
+  if ($("cNew").value.trim()) addCustom();          /* activité tapée mais pas encore ajoutée */
+  const msg = build(); $("cErr").textContent = msg; if (msg) return;
+  $("cOut").classList.remove("hide");
   const r = e.submitter ? e.submitter.getBoundingClientRect() : {left:innerWidth/2,top:innerHeight/2,width:0,height:0};
   burst(r.left + r.width/2, r.top + r.height/2, 22);
   setTimeout(() => $("cOut").scrollIntoView({behavior:calm?"auto":"smooth",block:"start"}), 150);
+  if (made.e !== lastActivated) activate();          /* envoie l'activation (ou un e-mail test) automatiquement */
 });
+/* Toute modification après la création met le lien à jour tout de suite */
+function refresh(){ if (made && !$("cOut").classList.contains("hide")){ const msg = build(); $("cErr").textContent = msg; $("cUpd").textContent = msg ? "" : T[L].updated; clearTimeout(refresh.t); refresh.t = setTimeout(() => $("cUpd").textContent = "", 1800); } }
+$("cf").addEventListener("input", refresh); $("cf").addEventListener("change", refresh);
+$("cChips").addEventListener("click", () => setTimeout(refresh)); $("cAdd").addEventListener("click", () => setTimeout(refresh));
 $("cCopy").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("cLinkBox").value); } catch { $("cLinkBox").select(); try{ document.execCommand("copy"); }catch{} }
   $("cCopy").textContent = T[L].copied; setTimeout(() => $("cCopy").textContent = T[L].cCopy, 1600);
 });
 $("cPrev").addEventListener("click", () => { if (!made) return; previewing = true; $("preview").textContent = T[L].prevOn; $("preview").classList.remove("hide"); startInvite(made); });
 $("preview").addEventListener("click", () => { previewing = false; $("preview").classList.add("hide"); resetNo(); L = made.l; applyStatic(); show("s0"); });
-$("cActBtn").addEventListener("click", async () => {
-  $("cActBtn").disabled = true;
-  try { await post(made.e, { _subject:T[made.l].actSubj, Info:T[made.l].actBody }); $("cActMsg").textContent = T[L].actSent; }
-  catch(err){ $("cActMsg").textContent = /activat/i.test(err.message) ? T[L].actSent : T[L].actFail; }
-  $("cActBtn").disabled = false;
-});
+$("cActBtn").addEventListener("click", activate);
 
 /* ---------- Envoi (FormSubmit) ---------- */
 async function post(to, fields){
-  const r = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
-    method:"POST", headers:{ "Content-Type":"application/json", "Accept":"application/json" },
-    body: JSON.stringify(Object.assign({ _template:"table", _captcha:"false" }, fields))
-  });
+  if (!EMAIL_RE.test(to)) throw new Error("adresse invalide");
+  let r;
+  try {
+    r = await fetch("https://formsubmit.co/ajax/" + to, {
+      method:"POST", headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+      body: JSON.stringify(Object.assign({ _template:"table", _captcha:"false" }, fields))
+    });
+  } catch { throw new Error("network"); }
   const j = await r.json().catch(() => ({}));
-  if (!r.ok || String(j.success) === "false") throw new Error(j.message || "refused");
+  if (!r.ok || String(j.success) === "false") throw new Error(j.message || ("HTTP " + r.status));
 }
 
 /* ---------- Écrans 1-3 : l'invitation ---------- */
@@ -508,15 +530,18 @@ $("again").addEventListener("click", submit);
 
 async function submit(){
   const t = T[L]; $("send").disabled = true; $("send").textContent = t.sending; $("again").hidden = true;
-  let ok = true;
+  let ok = true, why = "";
   try {
     if (!cfg || !cfg.e) throw new Error("no address");
     await post(cfg.e, {
       _subject: t.subj(data.name, data.act, fmtDay(data.day), data.hour),
       [t.kName]:data.name, [t.kDay]:fmtDay(data.day), [t.kHour]:data.hour, [t.kAct]:data.act, [t.kMsg]:data.msg || "—"
     });
-  } catch { ok = false; }
-  $("doneTitle").innerHTML = ok ? t.okT : t.koT; $("doneText").textContent = ok ? t.okP : t.koP; $("again").hidden = ok;
+  } catch(err){ ok = false; why = err.message || ""; }
+  $("doneTitle").innerHTML = ok ? t.okT : t.koT;
+  $("doneText").textContent = ok ? t.okP : (/activat/i.test(why) ? t.koAct : why === "network" ? t.koNet : t.koP);
+  $("why").textContent = ok || why === "network" ? "" : why;
+  $("again").hidden = ok;
   $("recap").innerHTML = [[t.rWho,data.name],[t.rWhen,fmtDay(data.day)],[t.rAt,data.hour],[t.rWhat,data.act]].concat(data.msg ? [[t.rMsg,data.msg]] : [])
     .map(([k,v]) => `<div><b>${k}</b><span>${esc(v)}</span></div>`).join("");
   show("s3"); $("send").disabled = false; $("send").textContent = t.fSend;
